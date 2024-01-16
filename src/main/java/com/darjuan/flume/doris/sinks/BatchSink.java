@@ -90,6 +90,12 @@ public class BatchSink extends AbstractSink implements Configurable {
             }
 
             if (!(var10 instanceof ChannelException)) {
+                try {
+                    // 抛出异常前,先执行afterFlush()方法 , 清理 batchBuilder
+                    afterFlush();
+                } catch (InterruptedException e) {
+                    throw new EventDeliveryException("Failed to send events", e);
+                }
                 throw new EventDeliveryException("Failed to send events", var10);
             }
 
